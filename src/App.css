@@ -1,0 +1,47 @@
+.container.text-center {
+  max-width: 100%;
+  display: flex;
+  justify-content: space-between; /* Równomierny rozkład paneli */
+  align-items: stretch; /* Dopasowanie wysokości paneli */
+  height: 95vh; /* Pełna wysokość widoku */
+  width: 100%; /* Pełna szerokość widoku */
+  margin: 0; /* Usunięcie marginesów */
+  padding: 0; /* Usunięcie wcięć */
+  box-sizing: border-box; /* Upewnienie się, że padding jest wliczany do wymiarów */
+}
+
+#left, #right {
+  flex: 1; /* Panele boczne zajmują jedną jednostkę elastycznej przestrzeni */
+  max-height: 95%;
+  overflow-y: auto; /* Przewijanie w razie potrzeby */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Wycentrowanie zawartości w pionie */
+  align-items: center; /* Wycentrowanie zawartości w poziomie */
+  background-color: #f8f9fa; /* Opcjonalnie: różnicowanie kolorów */
+}
+
+#mid {
+  flex: 2; /* Panel środkowy zajmuje więcej przestrzeni (2 jednostki) */
+  max-height: 95%;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center; /* Wycentrowanie zawartości w poziomie */
+  align-items: center; /* Wycentrowanie zawartości w pionie */
+  background-color: #e9ecef; /* Opcjonalnie: różnicowanie kolorów */
+}
+
+main{
+  max-width:100%;
+}
+
+.btn1{
+  border: none;
+  background-color: #f8f9fa;
+}
+
+#box{
+  height:70vh;
+  width:60vh;
+}
+

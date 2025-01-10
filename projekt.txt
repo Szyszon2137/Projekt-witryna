@@ -1,0 +1,113 @@
+import "./App.css";
+
+function Navbar() {
+  return (
+    <nav className="navbar navbar-expand-lg bg-warning">
+      <div className="container-fluid">
+        <i className="navbar-brand">Sklep Szkolny "Buła"</i>
+        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+          <li className="nav-item">
+            <button className="btn">Home</button>
+          </li>
+          <li className="nav-item">
+            <button className="btn">Link</button>
+          </li>
+        </ul>
+        <form className="d-flex" role="search">
+          <input
+            className="form-control me-2"
+            type="search"
+            placeholder="Wyszukaj element"
+          />
+          <button className="btn btn-outline-success" type="submit">
+            Szukaj
+          </button>
+        </form>
+      </div>
+    </nav>
+  );
+}
+
+function Login() {
+  return (
+    <form>
+      <div className="mb-3">
+        <h3>Panel Logowania</h3>
+        <label htmlFor="login" className="form-label">
+          Login
+        </label>
+        <input type="text" className="form-control" id="login" />
+      </div>
+      <div className="mb-3">
+        <label htmlFor="exampleInputPassword1" className="form-label">
+          Password
+        </label>
+        <input
+          type="password"
+          className="form-control"
+          id="exampleInputPassword1"
+        />
+      </div>
+      <button type="submit" className="btn btn-primary">
+        Submit
+      </button>
+    </form>
+  );
+}
+
+function Footer() {
+  return (
+    <p>Kontakt: +48 233 882 738; E-mail: bula_sklep@mail.com</p>
+  );
+}
+
+function Lista() {
+  const arr = ["Hot dog", "bułka", "napój", "batonik"];
+  return (
+    <ol>
+      {arr.map((elem, index) => (
+        <li key={index}>{elem}</li>
+      ))}
+    </ol>
+  );
+}
+
+function App() {
+  return (
+    <div className="container-fluid">
+      <header className="mb-3">
+        <Navbar />
+      </header>
+      <main>
+        <div className="container text-center">
+          <div className="row">
+            <div
+              id="left"
+              className="h-auto position-absolute top-50 start-0 translate-middle-y bg-warning-subtle"
+            >
+              <h3>Lista elementów</h3>
+              <Lista />
+            </div>
+            <div
+              id="mid"
+              className="position-absolute top-50 start-50 translate-middle"
+            >
+              {/* Możesz tutaj dodać coś dynamicznego */}
+            </div>
+            <div
+              id="right"
+              className="p-3 me-3 position-absolute top-50 end-0 translate-middle-y border border-secondary rounded"
+            >
+              <Login />
+            </div>
+          </div>
+        </div>
+      </main>
+      <footer className="bg-warning text-start">
+        <Footer />
+      </footer>
+    </div>
+  );
+}
+
+export default App;
