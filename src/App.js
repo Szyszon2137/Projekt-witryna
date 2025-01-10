@@ -22,52 +22,116 @@ function Navbar() {
   );
 }
 
-function Login() {
+function Login({ setIsAddingItem }) {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  var isLoggedIn = false
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (login === adminLogin && password === adminPass) {
       setIsAuthenticated(true);
       alert("Logowanie udane!");
-      isLoggedIn = true;
     } else {
       alert("Błędny login lub hasło!");
     }
   };
 
   return (
-    <div className="border border-dark rounded">
-      <form id="logowanie" className="p-4" onSubmit={handleSubmit}>
+    <div id="right" className="border-start border-secondary">
+      <div className="border border-dark rounded">
+        <form id="logowanie" className="p-4" onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <h3>Panel Logowania</h3>
+            <input
+              type="text"
+              className="form-control bg-warning-subtle"
+              id="login"
+              placeholder="Login"
+              value={login}
+              onChange={(e) => setLogin(e.target.value)}
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              type="password"
+              className="form-control bg-warning-subtle"
+              id="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <button type="submit" className="btn btn-primary mt-0">
+            Submit
+          </button>
+        </form>
+        {isAuthenticated && (
+          <button
+            className="btn btn-success mt-0 mb-2"
+            onClick={() => setIsAddingItem(true)}
+          >
+            Dodaj element
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function AddItemForm({ onAddItem, onCancel }) {
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!name || !price || !description) {
+      alert("Wypełnij wszystkie pola!");
+      return;
+    }
+
+    onAddItem({ name, price: parseFloat(price), description });
+    onCancel();
+  };
+
+  return (
+    <div className="border border-dark rounded p-4">
+      <h3>Dodaj nowy element</h3>
+      <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <h3>Panel Logowania</h3>
           <input
             type="text"
-            className="form-control bg-warning-subtle"
-            id="login"
-            placeholder="Login"
-            value={login}
-            onChange={(e) => setLogin(e.target.value)}
+            className="form-control"
+            placeholder="Nazwa produktu"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
         <div className="mb-3">
           <input
-            type="password"
-            className="form-control bg-warning-subtle"
-            id="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            type="number"
+            className="form-control"
+            placeholder="Cena produktu (zł)"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
           />
         </div>
+        <div className="mb-3">
+          <textarea
+            className="form-control"
+            placeholder="Opis produktu"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          ></textarea>
+        </div>
         <button type="submit" className="btn btn-primary">
-          Submit
+          Dodaj
+        </button>
+        <button type="button" className="btn btn-secondary ms-2" onClick={onCancel}>
+          Anuluj
         </button>
       </form>
-      {isAuthenticated && <p className="text-success">Jesteś zalogowany!</p>}
     </div>
   );
 }
@@ -80,18 +144,9 @@ function Elem({ elem }) {
   return (
     <div className="border border-dark rounded p-3">
       <div id="box" className="d-flex flex-column align-items-center">
-        <div id="img" className="border border-dark rounded mb-3">
-          {/* Wstawienie obrazka z odpowiednim opisem, lub tekst zastępczy */}
-          <img
-            src={elem.image || ""}
-            alt={elem.name ? `Zdjęcie dla: ${elem.name}` : "Brak zdjęcia"}
-          />
-        </div>
-        {/* Wyświetlenie nazwy elementu */}
         <h4>{elem.name}</h4>
       </div>
       <div className="mt-3">
-        {/* Wyświetlenie ceny i opisu elementu */}
         <p>
           <b>Cena:</b> {elem.price} zł
         </p>
@@ -103,25 +158,16 @@ function Elem({ elem }) {
   );
 }
 
-
-function Lista({ onSelect }) {
-  const items = [
-    { name: "Hot dog", price: 4, description: "Hot dog z wybranym sosem, klasyczna przekąska" },
-    { name: "Bułka", price: 3, description: "Bułka z szynką, serem, lub obojgiem! Można dodać sos." },
-    { name: "Napój", price: 2, description: "Orzeźwiający napój do wyboru." },
-    { name: "Batonik", price: 1.5, description: "Słodka przekąska, iwiele rodzaji." },
-    { name: "Zupa", price: 5, description: "Ciepła zupa z saszetki." }
-  ];
-
+function Lista({ items, onSelect, onDelete }) {
   return (
     <ol>
       {items.map((item, index) => (
-        <li key={index}>
-          <button
-            className="btn1"
-            onClick={() => onSelect(item)} // Przekazanie całego obiektu `item`
-          >
+        <li key={index} className="d-flex justify-content-between align-items-center mb-2">
+          <button className="btn1 me-2" onClick={() => onSelect(item)}>
             <b>{item.name}</b>
+          </button>
+          <button className="btn btn-danger btn-sm" onClick={() => onDelete(index)}>
+            Usuń
           </button>
         </li>
       ))}
@@ -130,7 +176,22 @@ function Lista({ onSelect }) {
 }
 
 function App() {
-  const [selectedElem, setSelectedElem] = useState(null); // Stan dla wybranego elementu
+  const [items, setItems] = useState([
+    { name: "Hot dog", price: 4, description: "Hot dog z wybranym sosem, klasyczna przekąska"},
+    { name: "Bułka", price: 3, description: "Bułka z szynką, serem, lub obojgiem. Można dodać sos." },
+    { name: "Napój", price: 2, description: "Orzeźwiający napój do wyboru." },
+    { name: "Batonik", price: 1.5, description: "Słodka przekąska, iwiele rodzajów." },
+    { name: "Zupa", price: 5, description: "Ciepła zupa z saszetki." },
+  ]);
+
+  const [selectedElem, setSelectedElem] = useState(null);
+  const [isAddingItem, setIsAddingItem] = useState(false);
+
+  const handleDeleteItem = (index) => {
+    const updatedItems = items.filter((_, i) => i !== index);
+    setItems(updatedItems);
+    setSelectedElem(null); // Resetuj zaznaczony element, jeśli został usunięty
+  };
 
   return (
     <div className="container-fluid">
@@ -141,14 +202,19 @@ function App() {
         <div className="container text-center">
           <div id="left" className="border-end border-secondary">
             <h3>Lista elementów</h3>
-            <Lista onSelect={setSelectedElem} />
+            <Lista items={items} onSelect={setSelectedElem} onDelete={handleDeleteItem} />
           </div>
           <div id="mid">
-            <Elem elem={selectedElem} />
+            {isAddingItem ? (
+              <AddItemForm
+                onAddItem={(newItem) => setItems((prevItems) => [...prevItems, newItem])}
+                onCancel={() => setIsAddingItem(false)}
+              />
+            ) : (
+              <Elem elem={selectedElem} />
+            )}
           </div>
-          <div id="right" className="border-start border-secondary">
-            <Login />
-          </div>
+          <Login setIsAddingItem={setIsAddingItem} />
         </div>
       </main>
       <footer className="bg-warning text-start">
@@ -157,7 +223,6 @@ function App() {
     </div>
   );
 }
-
 
 function Footer() {
   return (
