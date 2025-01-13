@@ -8,21 +8,13 @@ function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg bg-warning">
       <div className="container-fluid">
-        <i className="navbar-brand">Sklep Szkolny "Buła"</i>
-        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-          <li className="nav-item">
-            <button className="btn">Home</button>
-          </li>
-          <li className="nav-item">
-            <button className="btn">Link</button>
-          </li>
-        </ul>
+        <i className="navbar-brand fs-3">Sklep Szkolny "Buła"</i>
       </div>
     </nav>
   );
 }
 
-function Login({ setIsAddingItem }) {
+function Login({ setIsAddingItem, setIsAdmin }) {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -31,6 +23,7 @@ function Login({ setIsAddingItem }) {
     e.preventDefault();
     if (login === adminLogin && password === adminPass) {
       setIsAuthenticated(true);
+      setIsAdmin(true); // Ustawia użytkownika jako administratora
       alert("Logowanie udane!");
     } else {
       alert("Błędny login lub hasło!");
@@ -67,6 +60,9 @@ function Login({ setIsAddingItem }) {
           </button>
         </form>
         {isAuthenticated && (
+          <p className = "text-success">Jesteś zalogowany!</p>
+        )}
+        {isAuthenticated && (
           <button
             className="btn btn-success mt-0 mb-2"
             onClick={() => setIsAddingItem(true)}
@@ -96,7 +92,7 @@ function AddItemForm({ onAddItem, onCancel }) {
   };
 
   return (
-    <div className="border border-dark rounded p-4">
+    <div id = "App" className="border border-dark rounded p-4">
       <h3>Dodaj nowy element</h3>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
@@ -158,20 +154,28 @@ function Elem({ elem }) {
   );
 }
 
-function Lista({ items, onSelect, onDelete }) {
+function Lista({ items, onSelect, onDelete, isAdmin }) {
   return (
     <ol>
       {items.map((item, index) => (
         <li key={index} className="d-flex justify-content-between align-items-center mb-2">
           <button className="btn1 me-2" onClick={() => onSelect(item)}>
-            <b>{item.name}</b>
+            <b>{index + 1}. {item.name}</b>
           </button>
-          <button className="btn btn-danger btn-sm" onClick={() => onDelete(index)}>
-            Usuń
-          </button>
+          {isAdmin && (
+            <button className="btn btn-danger btn-sm" onClick={() => onDelete(index)}>
+              Usuń
+            </button>
+          )}
         </li>
       ))}
     </ol>
+  );
+}
+
+function Footer() {
+  return (
+    <p>Kontakt: +48 233 882 738; E-mail: bula_sklep@mail.com</p>
   );
 }
 
@@ -186,6 +190,7 @@ function App() {
 
   const [selectedElem, setSelectedElem] = useState(null);
   const [isAddingItem, setIsAddingItem] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleDeleteItem = (index) => {
     const updatedItems = items.filter((_, i) => i !== index);
@@ -194,17 +199,22 @@ function App() {
   };
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid w-auto">
       <header>
         <Navbar />
       </header>
       <main>
-        <div className="container text-center">
+        <div className="container text-center mb-0">
           <div id="left" className="border-end border-secondary">
             <h3>Lista elementów</h3>
-            <Lista items={items} onSelect={setSelectedElem} onDelete={handleDeleteItem} />
+            <Lista
+              items={items}
+              onSelect={setSelectedElem}
+              onDelete={handleDeleteItem}
+              isAdmin={isAdmin}
+            />
           </div>
-          <div id="mid">
+          <div id="mid" className="h-100 mb-0">
             {isAddingItem ? (
               <AddItemForm
                 onAddItem={(newItem) => setItems((prevItems) => [...prevItems, newItem])}
@@ -214,19 +224,13 @@ function App() {
               <Elem elem={selectedElem} />
             )}
           </div>
-          <Login setIsAddingItem={setIsAddingItem} />
+          <Login setIsAddingItem={setIsAddingItem} setIsAdmin={setIsAdmin} />
         </div>
       </main>
-      <footer className="bg-warning text-start">
+      <footer className="bg-warning text-start m-0">
         <Footer />
       </footer>
     </div>
-  );
-}
-
-function Footer() {
-  return (
-    <p>Kontakt: +48 233 882 738; E-mail: bula_sklep@mail.com</p>
   );
 }
 
