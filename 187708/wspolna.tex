@@ -1,0 +1,23 @@
+\documentclass[12pt,a4paper]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[OT4]{fontenc}
+
+\makeatletter
+\renewcommand\thechapter{\@arabic \c@chapter .}
+\renewcommand\thefigure{\ifnum \c@chapter >\z@ \thechapter \fi \@arabic \c@figure .}
+\renewcommand\thetable{\ifnum \c@chapter >\z@ \thechapter \fi \@arabic \c@table .}
+\renewcommand\thesection{\thechapter \@arabic \c@section .}
+\renewcommand\thesubsection{\thesection \@arabic \c@subsection .}
+\renewcommand\theequation{\thechapter \@arabic \c@equation}
+\makeatother
+
+\author{J.~Sadolewski}
+\title{Wspólna książka w \LaTeX{}}
+
+\begin{document}
+\maketitle
+
+\include{indeks/tresc.tex}
+
+
+\end{document}
