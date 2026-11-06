@@ -2,3 +2,6 @@
 \section{Nazwa punktu}
 
 Dowolna tresc, alboo lorem ipsum
+
+\section{Kolejny punkt}
+Przeklinam te laby całą swoją egzystencją istg
